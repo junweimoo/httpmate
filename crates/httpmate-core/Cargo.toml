@@ -1,0 +1,38 @@
+[package]
+name = "httpmate-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Core proxy engine, storage and certificate authority for httpmate"
+
+[dependencies]
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+arc-swap = { workspace = true }
+base64 = { workspace = true }
+bytes = { workspace = true }
+http = { workspace = true }
+http-body = { workspace = true }
+http-body-util = { workspace = true }
+hyper = { workspace = true }
+hyper-rustls = { workspace = true }
+hyper-util = { workspace = true }
+pin-project-lite = { workspace = true }
+rcgen = { workspace = true }
+rusqlite = { workspace = true }
+rustls = { workspace = true }
+rustls-pemfile = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+time = { workspace = true }
+tokio = { workspace = true }
+tokio-rustls = { workspace = true }
+tracing = { workspace = true }
+webpki-roots = { workspace = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+security-framework = "2"
+
+[dev-dependencies]
+tempfile = "3"
+tracing-subscriber = { workspace = true }

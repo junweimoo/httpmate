@@ -1,0 +1,12 @@
+# Rust
+/target
+
+# Node
+node_modules
+dist
+
+# Local tool state
+.claude/settings.local.json
+
+# macOS
+.DS_Store
