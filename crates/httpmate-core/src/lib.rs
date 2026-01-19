@@ -4,6 +4,7 @@
 //! callable without a GUI. The Tauri shell (and future CLI / agent control
 //! surfaces) are thin adapters over [`Controller`].
 
+pub mod ca;
 pub mod config;
 pub mod events;
 
