@@ -7,6 +7,7 @@
 pub mod ca;
 pub mod config;
 pub mod events;
+pub mod store;
 
 pub use config::{AppConfig, ProxySettings};
 pub use events::*;
