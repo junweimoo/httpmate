@@ -6,8 +6,15 @@
 
 pub mod ca;
 pub mod config;
+pub mod controller;
 pub mod events;
+pub mod intercept;
+pub mod macos;
+pub mod proxy;
 pub mod store;
+pub mod tee;
+
+pub use controller::Controller;
 
 pub use config::{AppConfig, ProxySettings};
 pub use events::*;
