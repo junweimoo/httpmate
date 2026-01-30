@@ -184,7 +184,7 @@ impl Engine {
             kind: "tunnel".into(),
             scheme: "https".into(),
             method: "CONNECT".into(),
-            host: host.clone(),
+            host: display_host(&host, Some(port), "https"),
             path: String::new(),
             client_addr: peer.to_string(),
             http_version: "HTTP/1.1".into(),
@@ -305,7 +305,7 @@ impl Engine {
             kind: "tunnel".into(),
             scheme: "https".into(),
             method: "CONNECT".into(),
-            host: host.to_string(),
+            host: display_host(host, Some(port), "https"),
             path: String::new(),
             client_addr: peer.to_string(),
             http_version: "HTTP/1.1".into(),
@@ -340,7 +340,7 @@ impl Engine {
             kind: "http".into(),
             scheme: scheme.into(),
             method: req.method().to_string(),
-            host: uri.host().unwrap_or_default().to_string(),
+            host: display_host(uri.host().unwrap_or_default(), uri.port_u16(), scheme),
             path: uri.path().to_string(),
             query: uri.query().map(str::to_string),
             http_version: format!("{:?}", req.version()),
@@ -591,6 +591,15 @@ fn strip_hop_headers(headers: &mut HeaderMap, preserve_upgrade: bool) {
     if !preserve_upgrade {
         headers.remove(CONNECTION);
         headers.remove(UPGRADE);
+    }
+}
+
+/// Host as users expect to see it: port included unless it's the scheme
+/// default. Keeps displayed URLs (and copy-as-cURL) correct.
+fn display_host(host: &str, port: Option<u16>, scheme: &str) -> String {
+    match (scheme, port) {
+        (_, None) | ("http", Some(80)) | ("https", Some(443)) => host.to_string(),
+        (_, Some(p)) => format!("{host}:{p}"),
     }
 }
 

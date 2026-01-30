@@ -140,7 +140,7 @@ async fn plain_http_request_is_proxied_and_recorded() {
     let summary = wait_for_completed(&mut events, |s| s.path == "/things").await;
     assert_eq!(summary.method, "POST");
     assert_eq!(summary.scheme, "http");
-    assert_eq!(summary.host, "127.0.0.1");
+    assert_eq!(summary.host, origin.to_string(), "host should include the non-default port");
     assert_eq!(summary.status, Some(200));
     assert_eq!(summary.state, TxState::Completed);
     assert!(summary.duration_ms.is_some());
@@ -220,7 +220,7 @@ async fn https_is_intercepted_via_mitm() {
     // The decrypted exchange is recorded like any plain transaction.
     let summary = wait_for_completed(&mut events, |s| s.path == "/secret").await;
     assert_eq!(summary.scheme, "https");
-    assert_eq!(summary.host, "localhost");
+    assert_eq!(summary.host, format!("localhost:{}", origin.port()));
     assert_eq!(summary.status, Some(200));
     assert_eq!(summary.state, TxState::Completed);
 
@@ -290,7 +290,7 @@ async fn passthrough_hosts_are_tunneled_not_intercepted() {
     // Recorded as an opaque tunnel: host and byte counts, no decrypted paths.
     let summary = wait_for_completed(&mut events, |s| s.kind == "tunnel").await;
     assert_eq!(summary.method, "CONNECT");
-    assert_eq!(summary.host, "localhost");
+    assert_eq!(summary.host, format!("localhost:{}", origin.port()));
 
     controller.stop().await.unwrap();
 }
