@@ -38,19 +38,15 @@ async fn wait_for_completed(
     .expect("timed out waiting for TransactionCompleted")
 }
 
-fn origin_service(
-    req: Request<Incoming>,
-) -> impl std::future::Future<Output = Result<Response<Full<Bytes>>, hyper::Error>> {
-    async move {
-        let path = req.uri().path().to_string();
-        let req_body = req.into_body().collect().await?.to_bytes();
-        let body = format!("origin says hello from {path}; you sent {}", req_body.len());
-        Ok(Response::builder()
-            .header("content-type", "text/plain")
-            .header("x-origin", "httpmate-test")
-            .body(Full::new(Bytes::from(body)))
-            .unwrap())
-    }
+async fn origin_service(req: Request<Incoming>) -> Result<Response<Full<Bytes>>, hyper::Error> {
+    let path = req.uri().path().to_string();
+    let req_body = req.into_body().collect().await?.to_bytes();
+    let body = format!("origin says hello from {path}; you sent {}", req_body.len());
+    Ok(Response::builder()
+        .header("content-type", "text/plain")
+        .header("x-origin", "httpmate-test")
+        .body(Full::new(Bytes::from(body)))
+        .unwrap())
 }
 
 /// Plain-HTTP origin; serves connections until dropped.
